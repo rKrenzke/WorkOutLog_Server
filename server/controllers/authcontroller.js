@@ -67,22 +67,25 @@ router.post('/log/', validateSession, function(req, res){
 // UPDATE LOG FOR INDIVIDUAL USER
 router.put('/log/:id', function(req, res){
     var data = req.params.id;
-    var authtestdata = req.body.authtestdata.item;
+    var description = req.body.log.description;
+    var definition = req.body.log.definition;
+    var result = req.body.log.result;
+
     Log
-        .update({
-            authtestdata: authtestdata
+    .update({
+        description: description,
+        definition: definition,
+        result: result
+    },
+    {where: {id: data}}
+    ).then(
+        function updateSuccess(updatedLog){
+            res.send(`Log ${data} updated!`);
         },
-        {where: {id: data}}
-        ).then(
-            function updateSuccess(updatedLog){
-                res.json({
-                    authtestdata: authtestdata
-                });
-            },
-            function updateError(err){
-                res.send(500, err.message);
-            }
-        )
+        function updateError(err){
+            res.send(500, err.message);
+        }
+    )
 });
 
 
